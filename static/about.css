@@ -1,0 +1,272 @@
+/* ============================================================
+   ChemLysis — about.css (modern, orange accent) — v2
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --orange-500: #f97316;
+  --orange-400: #fb923c;
+  --orange-300: #fdba74;
+  --orange-600: #ea580c;
+  --orange-700: #c2410c;
+  --ink: #1c1917;
+  --ink-soft: #44403c;
+  --muted: #78716c;
+  --line: #e7e5e4;
+  --surface: #ffffff;
+  --surface-2: #fafaf9;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 4px 20px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 16px 48px rgba(120, 53, 15, 0.16);
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; height: 100%; }
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: linear-gradient(160deg, #FDC830 0%, #F37335 100%) fixed;
+  min-height: 100vh;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  letter-spacing: -0.01em;
+}
+
+a { color: var(--orange-600); text-decoration: none; transition: color 0.15s ease; }
+a:hover { color: var(--orange-700); text-decoration: underline; }
+
+img { display: block; max-width: 100%; }
+
+::selection { background: rgba(249, 115, 22, 0.25); }
+
+/* =====================  MENU / HEADER  ===================== */
+
+#menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  background: rgba(28, 25, 23, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+}
+
+#menu .phymly_icon button,
+#main_menu, #profile_button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: transform 0.15s ease;
+}
+#menu .phymly_icon button:hover,
+#main_menu:hover { transform: scale(1.08); }
+
+.phymly_icon img, #account {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+#about_adm { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.about_adm, form.about_adm { margin: 0; }
+
+.abt_adm {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.abt_adm:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-1px);
+}
+
+#menu_text {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  opacity: 0.95;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+}
+
+#acc { display: flex; align-items: center; gap: 12px; }
+#acc form { margin: 0; }
+
+.acc_button {
+  background: linear-gradient(180deg, var(--orange-400), var(--orange-600));
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+}
+.acc_button:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.5);
+}
+.acc_button:active { transform: translateY(0); }
+.acc_button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+#acc_text { font-size: 14px; color: #fff; }
+
+#account {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(253, 186, 116, 0.6);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+#account:hover { border-color: var(--orange-300); }
+
+/* =====================  MAIN  ===================== */
+
+#main {
+  max-width: 860px;
+  width: 100%;
+  margin: 40px auto;
+  padding: 40px 48px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--ink);
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--orange-500);
+  margin-top: 16px;
+  letter-spacing: -0.02em;
+}
+.title:first-child { margin-top: 0; }
+
+.slogan {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--orange-600);
+}
+
+.text {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+a.text {
+  color: var(--orange-600);
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  padding: 6px 0;
+}
+a.text:hover { text-decoration: underline; }
+
+.text_n_photo {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.text_n_photo .text { flex: 1; min-width: 260px; }
+
+.circle_photo {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--orange-300);
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.circle_photo:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 28px rgba(249, 115, 22, 0.25);
+}
+
+/* =====================  CANVAS BG  ===================== */
+
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* =====================  FOOTER  ===================== */
+
+.footer {
+  flex-shrink: 0;
+  background: #1c1917;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  width: 100%;
+  font-size: 13px;
+  padding: 18px 20px;
+  font-family: var(--font);
+  letter-spacing: 0.02em;
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* =====================  RESPONSIVE  ===================== */
+
+@media (max-width: 850px) {
+  #main { margin: 24px auto; }
+}
+
+@media (max-width: 640px) {
+  #menu { padding: 12px 16px; justify-content: center; }
+  #menu_text { font-size: 14px; order: 3; flex-basis: 100%; text-align: center; }
+  #main { margin: 20px auto; padding: 24px 20px; }
+  .title { font-size: 22px; }
+  .slogan { font-size: 16px; }
+  .acc_button { padding: 7px 14px; font-size: 13px; }
+  .circle_photo { width: 96px; height: 96px; }
+}

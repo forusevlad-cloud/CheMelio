@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="static/about.css">
+    <link rel="icon" href="static/images/logo.png" type="image/png">
+    <title>CheMelio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webgl-fluid-simulation@1.0.0/dist/fluidSimulation.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="menu">
+            <form class="phymly_icon" action="/">
+                <button id="main_menu" type="submit">
+                    <img class="phymly_icon" src="static/images/logo.png">
+                </button>
+            </form>
+            <div id="about_adm">
+                <form class='about_adm' action="/search">
+                    <button type="submit" class="abt_adm">Пошук</button>
+                </form>
+                <form class='about_adm' action="/tasks">
+                    <button type="submit" class="abt_adm">Завдання</button>
+                </form>
+                <form class='about_adm' action="/about">
+                    <button type="submit" class="abt_adm">Про сайт</button>
+                </form>
+            </div>
+            <p id="menu_text"><i>CheMelio - веб-сайт з хімії</i></p>
+            <div id="acc">
+                {% if not logined %}
+                <form action="/signin">
+                    <button class="acc_button" id="sign_in">Реєстрація</button>
+                </form>
+                <form action="/login">
+                    <button class="acc_button" id="log_in">Вхід</button>
+                </form>
+                {% else %}
+                <form action="/logout">
+                    <button class="acc_button" id="logout">Вихід</button>
+                </form>
+                <p id="acc_text"><i><b>{{person['username_login']}}</b></i></p>
+                <img id="account" src="static/images/account.jpg">
+                {% endif %}
+            </div>
+        </div>
+    <div id="main">
+        <h1 class="title">Про сайт</h1>
+        <p class="slogan">Хімія - наша дорога в майбутнє!</p>
+        <div class="text_n_photo">
+            <p class="text">CheMelio - сайт з достовірною інформацією та задачами, навіть, з всеукраїнських олімпіад!
+                Цей сайт створено для полегшення вивчення хімії та доступний кожному, хто прагне більшого.
+                На даному сайті Ви знайдете опис для багатьох популярних речовин та задачі будь-яких рівнів складності.
+                Наші задачі створені людьми, що є професіоналами в даній сфері, кожний опис формул був ретельно відібраний, щоб в жодному разі не виникло дезінформації.
+                Знання - доступні всім!
+            </p>
+            <img class="circle_photo" src="static/images/logo.png" alt="CheMelio Logo">
+        </div>
+        
+        <p class="slogan">Мета сайту - потужні знання у вільному доступі</p>
+        <p class="text">Даний сайт створено для того, щоб кожний бажаючий міг зробити запити на необхідні речовини та
+            отримати понад десяток 'потужних' задач, які допоможуть засвоїти певний матеріал. Цей сайт можне використовувати як
+            школяр/студент, так і вчителі для того, щоб надати учням навчальний матеріал.
+        </p>
+        
+        <h1 class="title">Функціонал</h1>
+        <p class="slogan">Функціонал пошуку</p>
+        <p class="text">Користувач може ввести хімічну формулу речовини, та сайт її знайде, якщо вона введена
+            літерами англійського алфавіту, також, не важливо літери маленького чи великого регістрів, 
+            для позначення індексу можна використовувати самі індекси (₂), так і звичайні цифри (2).
+        </p>
+        
+        <p class="slogan">Додатковий функціонал</p>
+        <p class="text">Для повернення на головну сторінку - натисніть на логотип сайту (у верхньому лівому кутку).
+            Також користувач може позначити виконані задачі натиснувши на спеціальне поле перед посиланням на задачу.
+        </p>
+        
+        <h1 class="title">Корисні сайти</h1>
+        <a class="text" target="_blank" rel="noopener" href="https://ptable.com/">https://ptable.com/</a>
+        <a class="text" target="_blank" rel="noopener" href="https://phet.colorado.edu/uk/simulations/filter?subjects=chemistr">https://phet.colorado.edu/uk/simulations/filter?subjects=chemistry</a>
+        <a class="text" target="_blank" rel="noopener" href="https://zperiod.app/">https://zperiod.app/</a>
+    </div>
+    <canvas id="bgCanvas"></canvas>
+</body>
+<footer class="footer">© 2026 CheMelio. Всі права захищені.</footer>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ua">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="static/tasks.css">
+        <link rel="icon" href="static/images/logo.png" type="image/png">
+        <title>CheMelio</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-toast {{ category }}" data-timeout="3000">
+                {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        <div id="menu">
+            <form class="phymly_icon" action="/">
+                <button id="main_menu" type="submit">
+                    <img class="phymly_icon" src="static/images/logo.png">
+                </button>
+            </form>
+            <div id="about_adm">
+                <form class='about_adm' action="/search">
+                    <button type="submit" class="abt_adm">Пошук</button>
+                </form>
+                <form class='about_adm' action="/tasks">
+                    <button type="submit" class="abt_adm">Завдання</button>
+                </form>
+                <form class='about_adm' action="/about">
+                    <button type="submit" class="abt_adm">Про сайт</button>
+                </form>
+                {% if admin %}
+                <form class="about_adm" action="/switch_adm_mode_tasks">
+                    <button type="submit" class="abt_adm">{% if not admin_mode %}Режим Редагування{% else %}Вийти з редагування{% endif %}</button>
+                </form>
+                {% endif %}
+            </div>
+            <p id="menu_text"><i>ChemMelio - веб-сайт з хімії</i></p>
+            <div id="acc">
+                {% if not logined %}
+                <form action="/signin">
+                    <button class="acc_button" id="sign_in">Реєстрація</button>
+                </form>
+                <form action="/login">
+                    <button class="acc_button" id="log_in">Вхід</button>
+                </form>
+                {% else %}
+                <form action="/logout">
+                    <button class="acc_button" id="logout">Вихід</button>
+                </form>
+                <p id="acc_text"><i><b>{{person['username_login']}}</b></i></p>
+                <img id="account" src="static/images/account.jpg">
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="main">
+            {% if admin_mode %}
+                <div id="do_menu">
+                    <form id="change_task_text" action="/change_task_text" method="POST">
+                        <textarea name='new_task_text' id="change_text">{{ task }}</textarea>
+                        <button type="submit" class="button">Зберегти текст</button>
+                    </form>
+                    <div id="add_photo_n_delete">
+                        <form action="/change_task_photo" method="POST" enctype="multipart/form-data">
+                            <div id="change_task_{{ task_id }}">
+                                <input id="file-upload-{{ task_id }}" type="file" name="new_task" accept="image/*" required style="display: none;" onchange="this.form.submit()">
+                                <button type="button" class="button" onclick="openFileInput('file-upload-{{ task_id }}')">Завантажити зображення</button>
+                            </div>
+                        </form>
+                        <form action="/delete_task_img">
+                            <button type="submit" class="button">Видалити зображення</button>
+                        </form>
+                        <form id="delete_from" action="/delete_task" method="POST">
+                            <input type="hidden" name="task_id" value="{{ task_id }}">
+                            <button type="submit" class="button">Видалити завдання</button>
+                        </form>
+                        <form id="add_some_tags" action="/add_tags" method="POST">
+                            <textarea name='some_tags' id="tags_area">{% if tags %}{{", ".join(tags)}}{% endif %}</textarea>
+                            <button type="submit" class="button">Встановити теги</button>
+                        </form>
+                        <form action="/set_task_class" style="width: 100%", method="POST">
+                            <label class="status_type">
+                                <p>НМТ💻</p>
+                                <input type="radio" name="set_task_type" class="radio_pick" value="nmt"
+                                {% if 'nmt' in set_task_type_4_show %}checked{% endif %} onchange="this.form.submit()">
+                            </label>
+                            <label class="status_type">
+                                <p>Олімпіадні🎓</p>
+                                <input type="radio" name="set_task_type" class="radio_pick" value="olympiad"
+                                {% if 'olympiad' in set_task_type_4_show %}checked{% endif %} onchange="this.form.submit()">
+                            </label>
+                            <label class="status_type">
+                                <p>Інше📝</p>
+                                <input type="radio" name="set_task_type" class="radio_pick" value="other"
+                                {% if 'other' in set_task_type_4_show %}checked{% endif %} onchange="this.form.submit()">
+                            </label>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div id="center_content">
+                {% if logined %}
+                <div class="search">
+                    <form action="/find_task" method="POST">
+                        <input type="text" name="tags" required {% if searching_text %}value="{{searching_text}}"{% endif %} placeholder="Ключові слова до завдання...">
+                        <button type="submit" class="button">Шукати</button>
+                    </form>
+                </div>
+
+                <div id="filters" class="collapsed">
+                    <p class="text_in_status_choose">
+                        <b>Статус завдань: {% if 'all_statuses' in  task_statuses_4_search %}Всі📚
+                        {% elif 'new' in  task_statuses_4_search %}Нові⭐
+                        {% elif 'revised' in task_statuses_4_search %}Розв'язуються👁️
+                        {% elif 'done' in task_statuses_4_search %}Виконані✅
+                        {%endif%}</b>
+                        <b>Тип завдань: {% if 'all_types' in task_types_4_search %}Всі📚
+                        {% elif 'nmt' in task_types_4_search %}НМТ💻
+                        {% elif 'olympiad' in task_types_4_search %}Олімпіадні🎓
+                        {% elif 'other' in task_types_4_search %}Інше📝
+                        {%endif%}</b>
+                        <button id="toggle_filters" type="button" aria-label="Згорнути/Розгорнути" title="Згорнути/Розгорнути">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </p>
+                    <div id="filter_body">
+                        <div id="set_filters">
+                            <div class="set_filter">
+                                <div class="center_text"><p>Cтатус завдань</p></div>
+                                <form action="/update_task_statuses" method="POST" id="filterStatusForm">
+                                    <label class="status_type">
+                                        <p>Всі📚</p>
+                                        <input type="radio" name="statuses" class="radio_pick" value="all_statuses" onchange="this.form.submit()"
+                                            {% if 'all_statuses' in  task_statuses_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>Нові⭐</p>
+                                        <input type="radio" name="statuses" class="radio_pick" value="new" onchange="this.form.submit()"
+                                            {% if 'new' in  task_statuses_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>Розв'язуються👁️</p>
+                                        <input type="radio" name="statuses" class="radio_pick" value="revised" onchange="this.form.submit()"
+                                            {% if 'revised' in task_statuses_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>Виконані✅</p>
+                                        <input type="radio" name="statuses" class="radio_pick" value="done" onchange="this.form.submit()"
+                                            {% if 'done' in task_statuses_4_search %}checked{% endif %}>
+                                    </label>
+                                </form>
+                            </div>
+                            <hr class="line">
+                            <div class="set_filter">
+                                <div class="center_text"><p>Тип завдань</p></div>
+                                <form action="/update_task_types" method="POST" id="filterTypeForm">
+                                    <label class="status_type">
+                                        <p>Всі📚</p>
+                                        <input type="radio" name="task_types" class="radio_pick" value="all_types" onchange="this.form.submit()"
+                                            {% if 'all_types' in task_types_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>НМТ💻</p>
+                                        <input type="radio" name="task_types" class="radio_pick" value="nmt" onchange="this.form.submit()"
+                                            {% if 'nmt' in task_types_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>Олімпіадні🎓</p>
+                                        <input type="radio" name="task_types" class="radio_pick" value="olympiad" onchange="this.form.submit()"
+                                            {% if 'olympiad' in task_types_4_search %}checked{% endif %}>
+                                    </label>
+                                    <label class="status_type">
+                                        <p>Інше📝</p>
+                                        <input type="radio" name="task_types" class="radio_pick" value="other" onchange="this.form.submit()"
+                                            {% if 'other' in task_types_4_search %}checked{% endif %}>
+                                    </label>
+                                </form>
+                            </div>
+                        </div>
+                        <div id="send_filters">
+                            <form action="/submit_filters">
+                                <button type="submit" class="button">Застосувати</button>
+                            </form>
+                            <form action="/reload_filters_2_scratch"><button type="submit" id="close-btn" aria-label="Закрити">&#8635</button></form>
+                        </div>
+                    </div>
+                </div>   
+                {% else %}
+                <div class="search" style="display: flex; justify-content: center; align-items: center;"><p style="color: rgba(128, 128, 128, 0.9);">Увійдіть або створіть акаунт, щоб розблокувати додаткові функції</p></div>
+                {% endif %}  
+                {% if task or photo%}
+                <div id="task">
+                    {% if logined %}
+                    <form id="choose_task_status" action="/task_status" method="POST">
+                        <p class="status_label">
+                            <span class="status_icon">⚙</span>
+                            Завдання №{{task_id}}
+                        </p>
+                        <div id="task_status">
+                            <label class="status_type">
+                                Нова⭐
+                                <input type="radio" name="task_status" class="radio_pick" value="new" onchange="this.form.submit()" {% if task_status == 'new' %}checked{% endif %}>
+                            </label>
+                            <label class="status_type">
+                                Розв'язується👁️
+                                <input type="radio" name="task_status" class="radio_pick" value="in_progress" onchange="this.form.submit()" {% if task_status == 'revised' %}checked{% endif %}>
+                            </label>
+                            <label class="status_type">
+                                Виконана✅
+                                <input type="radio" name="task_status" class="radio_pick" value="done" onchange="this.form.submit()" {% if task_status == 'done' %}checked{% endif %}>
+                            </label>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <div id="show_task">
+                        <p>{% if task %}{{ task.replace('\n', '<br>')|safe }}{% else %}Завдання відсутнє!{% endif %}</p>
+                        {% if photo %}<img id="task_photo" src="{{photo}}">{% endif %}
+                    </div>
+                    {% if logined %}
+                    <div id="taskpage">
+                        <div id="ans_note_rtrn">
+                            <button type="button" id="show_the_answer" class="button" {% if not show_answer_can and not admin_mode %}disabled{%endif%}>{% if not show_answer %}Побачити{% else %}Сховати{% endif %} відповідь</button>
+                            <button type="button" id="show_the_note" class="button" {% if not show_note_can and not admin_mode %}disabled{%endif%}>{% if not show_note %}Побачити{% else %}Сховати{% endif %} пояснення</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if admin_mode %}
+                        <form action="/change_answer" method="POST" id="answer_container" {% if not show_answer %}style="display: none;"{% endif %}>
+                            <div id="change_answer">
+                                <input type="text" id="add_answer" name="change_answer" value="{{ answer }}" required style="width: 100%;">
+                                <button type="submit" id="change_answer_button" class="button">Змінити</button>
+                            </div>
+                        </form>
+                    {% elif show_answer_can %}
+                        <p id="answer_container" {% if not show_answer %}style="display: none;"{% endif %}>
+                            <i id="the_answer" >Відповідь: {{ answer.replace('\n', '<br>')|safe }}</i>
+                        </p>
+                    {% endif %}
+
+                    {% if admin_mode %}
+                        <form action="/change_note" method="POST" id="note_container" {% if not show_note %}style="display: none;"{% endif %}>
+                            <div id="change_note">
+                                <input type="text" id="add_note" name="change_note" value="{{ note }}" required style="width: 100%;">
+                                <button type="submit" id="change_note_button" class="button">Змінити</button>
+                            </div>
+                        </form>
+                    {% elif show_note_can %}
+                        <p id="note_container" {% if not show_note %}style="display: none;"{% endif %}>
+                            <i id="the_note" >Пояснення: {{ note.replace('\n', '<br>')|safe }}</i>
+                        </p>
+                    {% endif %}
+
+                    {% if tags %}
+                    <div class="task_item_row" style="flex-wrap: wrap;">
+                        {% for tag in tags %}
+                            <div class="shown_tags">{{tag}}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="tasks_list">
+                {% if no_tasks or not tasks_given %}
+                    <p>Нажаль, завдання за даним запитом відсутні</p>
+                    {% if admin_mode %}
+                        <form id="text_task" action="/add_task_text" method="POST">
+                            <div id="add_tasks">
+                                <textarea type="text" name='task_text'></textarea>
+                                <button class="button" type="submit">Завантажити задачу</button>
+                            </div>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    {% if admin_mode %}
+                        <form id="text_task" action="/add_task_text" method="POST">
+                            <div id="add_tasks">
+                                <textarea type="text" name='task_text' id="new_task"></textarea>
+                                <button id="send_text" class="button" type="submit">Завантажити задачу</button>
+                            </div>
+                        </form>
+                    {% endif %}
+                    <div id="url_ta_st">
+                        {% for Task_id in tasks_given %}
+                            {% set got_task_status = task_statuses[loop.index0] %}
+                            <div class="task_item_row">
+                                <div class="box_url" {% if task_id == Task_id %}style="box-shadow: inset 0px 0px 4px 4px #fdba74;"{% endif %}><a class="task_shown_link" href="/task" data-task-id="{{ Task_id }}">Завдання №{{ Task_id }}</a></div>
+                                <div class="task_status_image">
+                                    <p>{% if got_task_status == 'done' %}✅{% elif got_task_status == 'revised' %}👁️{% else %}⭐{% endif %}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if can_scroll_tasks %}
+                    <div id="tasks_list_buttons">
+                        <form action="/previous_tasks_list">
+                            <button type="submit" class="button" {% if blocked_previous_tasks_list_button %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" {% endif %}>Попередні</button>
+                        </form>
+                        <form action="/next_tasks_list">
+                            <button type="submit" class="button" {% if blocked_next_tasks_list_button %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" {% endif %}>Наступні</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <script src="/static/main.js"></script>
+
+        <footer class="footer">© 2026 CheMelio. Всі права захищені.</footer>
+    </body>
+</html>

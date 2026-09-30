@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ua">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="/static/main.css?v=2.0">
+        <link rel="icon" href="static/images/logo.png" type="image/png">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CheMelio</title> 
+    </head>
+    <body>
+        <div id="menu">
+            <form class="phymly_icon" action="/">
+                <button id="main_menu" type="submit">
+                    <img class="phymly_icon" src="static/images/logo.png">
+                </button>
+            </form>
+            <div id="about_adm">
+                <form class='about_adm' {% if Formula and not not_found %}action="/search"{% else %}action="/"{% endif %}>
+                    <button type="submit" class="abt_adm">Пошук</button>
+                </form>
+                <form class='about_adm' {% if task_id %}action='/task'{% else %}action="/tasks"{% endif %}>
+                    <button type="submit" class="abt_adm">Завдання</button>
+                </form>
+                <form class='about_adm' action="/about">
+                    <button type="submit" class="abt_adm">Про сайт</button>
+                </form>
+                {% if admin %}
+                <form class="about_adm" action="/switch_adm_mode_main">
+                    <button type="submit" class="abt_adm">{% if not admin_mode %}Режим Редагування{% else %}Вийти з редагування{% endif %}</button>
+                </form>
+                {% endif %}
+            </div>
+            <p id="menu_text"><i>CheMelio - веб-сайт з хімії</i></p>
+            <div id="acc">
+                {% if not logined %}
+                <form action="/signin">
+                    <button class="acc_button" id="sign_in">Реєстрація</button>
+                </form>
+                <form action="/login">
+                    <button class="acc_button" id="log_in">Вхід</button>
+                </form>
+                {% else %}
+                <form action="/logout">
+                    <button class="acc_button" id="logout">Вихід</button>
+                </form>
+                <p id="acc_text"><i><b>{{person['username_login']}}</b></i></p>
+                <form {% if not show_profile_info %}action="/profile"{% else %}action="/close_profile"{% endif %}>
+                    <button type="submit" id="profile_button">
+                        <img id="account" src="static/images/account.jpg">
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    <div id="main">
+        {% if show_profile_info %}
+            <div id="profile_info">
+                <form action="/close_profile"><button type="submit" class="close-btn" style="background-color: rgb(252, 133, 37); top:5px; right:5px; width: 30px; height: 30px;">&times;</button></form>
+                <p id="greeting">Вітаю, {{ person['username_login'] }}!</p>
+
+                <div class="row" style="justify-content: center;">
+                    <p class="profile_text">Змінити пароль</p>
+                    <form action="/change_password" method="POST">
+                        <button class="profile_buttons" type="submit" title="Редагувати пароль">📝</button>
+                    </form>
+                </div>
+
+                <p class="diagram_title">Діаграма статусів завдань</p>
+
+                <div class="chart_wrap">
+                    <div id="diagrama">
+                        <div class="chart_center">
+                            <span class="chart_total">{{ person_tasks_info['done_amount'] + person_tasks_info['revised_amount'] + person_tasks_info['new_amount'] }}</span>
+                            <span class="chart_label">завдань</span>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                :root {
+                    --percent-done: {{ person_tasks_info['done'] }}%;
+                    --percent-revised: {{ person_tasks_info['revised'] + person_tasks_info['done'] }}%;
+                }
+                #diagrama {
+                    position: relative;
+                    width: 180px;
+                    height: 180px;
+                    border-radius: 50%;
+                    background: conic-gradient(
+                        var(--green) 0% var(--percent-done),
+                        var(--blue) var(--percent-done) var(--percent-revised),
+                        var(--yellow) var(--percent-revised) 100%
+                    );
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+                }
+                .chart_center {
+                    position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 110px; height: 110px;
+                    border-radius: 50%;
+                    background: var(--card-bg);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 2px;
+                }
+                .chart_total {
+                    font-size: 26px;
+                    font-weight: 700;
+                    color: var(--text-main);
+                    line-height: 1;
+                }
+                .chart_label {
+                    font-size: 12px;
+                    color: var(--text-dim);
+                    text-transform: lowercase;
+                }
+                </style>
+
+                <div class="column_info">
+                    <div class="legend_item">
+                        <div class="legend_swatch" style="background: var(--green);"></div>
+                        Виконані ({{ person_tasks_info['done_amount'] }})
+                    </div>
+                    <div class="legend_item">
+                        <div class="legend_swatch" style="background: var(--blue);"></div>
+                        Розв'язуються ({{ person_tasks_info['revised_amount'] }})
+                    </div>
+                    <div class="legend_item">
+                        <div class="legend_swatch" style="background: var(--yellow);"></div>
+                        Нові ({{ person_tasks_info['new_amount'] }})
+                    </div>
+                </div>
+                {% if admin %}
+                <div class="row" style="display:flex; justify-content: center; align-items: center;">
+                    <p class="profile_text">Опції адміна</p>
+                    <button formaction="/show_users_list_for_admin" formmethod="POST" id="show_users_list_for_admin" class="profile_buttons">🔻</button>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div id="flash-container">
+            {% for category, message in messages %}
+                <div class="flash-toast {{ category }}" data-timeout="3000">
+                {{ message }}
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+        <div id="srch_dscr">
+            <div id="enter">
+                <p id="explain_enter"><i><b>Введіть назву або хімічну формулу речовини</b></i></p>
+                <form class="submit" action="/search" method="POST">
+                    <div class="row_formula_input">
+                        <input name="formula" id="enter_formula" class='send_the_formula_input' data-page="/search" type="text"
+                        {% if not Formula or not_found%}placeholder="Варіанти формул: H2O, h2o, H₂O, h₂o..."
+                        {% else %}placeholder="{{Formula}}"{% endif %} maxlength="20" required value="{{Formula}}">
+                        {% if Formula and not not_found%}<button formaction="/" formmethod="POST" id="close-btn" title="Очистити">&#8635</button>{% endif %}
+                    </div>
+                    <button class='send_the_formula' data-page="/search" type="submit" id="send_formula">Пошук</button>
+                    {% if admin_mode %}
+                    <button type="submit" id="add_formula" formaction="/add_formula">Створити</button>
+                    {% endif %}
+                </form>
+            </div>
+            {% if formula_classes %}
+            <div id="moving_formulas">
+                <p><b><i>{{entered_class}} - знайдено {{amount_class_formulas}}</i></b></p>
+                {% if amount_class_formulas > 1 %}
+                <div class="row_formulas">
+                    <form action="previous_formula">
+                        <button type="submit" class="change" {% if blocked_previous_formula %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" {% endif %}>Попередня формула</button>
+                    </form>
+                    <form action="next_formula">
+                        <button type="submit" class="change" {% if blocked_next_formula %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" {% endif %}>Наступна формула</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% if admin_mode %}
+            <div id="descript">
+                <div id='image_box'>
+                    <img id="image" {% if information[1] and information[1][num] %}src="{{information[1][num]}}"
+                    {% else %}src="static/images/no_photo.png"{% endif %}>
+                </div>
+                <div id="swap_add">
+                    <div class="row_photos">
+                        <form class="conditions_chdl" action="/previous_photo">
+                            <button type="submit" id="previous_photo" class="change">Попереднє</button>
+                        </form>
+                        <form class="conditions_chdl" action="/next_photo">
+                            <button type="submit" id="next_photo" class="change">Наступне</button>
+                        </form>
+                    </div>
+                    <div class="column_photos">
+                        <form action="/upload_img" method="post" enctype="multipart/form-data">
+                            <div class="conditions">
+                                <input id="photo-add" class="file_input" type="file" name="upload_photo" accept="image/*" required style="display: none;" onchange="this.form.submit()">
+                                <button type="button" class="change" onclick="addPhotoInput()">Завантажити зображення</button>
+                            </div>
+                        </form>
+                        <form action="/add_img" method="post" enctype="multipart/form-data">
+                            <div class="conditions">
+                                <input id="photo-upload" class="file_input" type="file" name="add_photo" accept="image/*" required style="display: none;" onchange="this.form.submit()">
+                                <button type="button" class="change" onclick="openPhotoInput()">Змінити зображення</button>
+                            </div>
+                        </form>
+                        <form class="conditions_chdl" action="/delete_img">
+                            <button type="submit" class="change">Видалити зображення</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="descriptions">
+                    <form action="/update_description" method="POST">
+                        <section>
+                            <b id="descriptions_">
+                                <p class="descript">
+                                    <label for="the_formula">Формула:</label><br>
+                                    <input type="text" id="the_formula" class="description_" name="the_formula" value="{{information[7]}}" required style="width: 100%;">
+                                </p>
+                                <p class="descript">
+                                    <label for="correct_name">Правильна хімічна назва:</label><br>
+                                    <input type="text" id="correct_name" class="description_" name="correct_name" value="{{information[2]}}" required style="width: 100%;">
+                                </p>
+                                <p class="descript">
+                                    <label for="common_name">Загальна назва:</label><br>
+                                    <input type="text" id="common_name" class="description_" name="common_name" value="{{information[3]}}" required style="width: 100%;">
+                                </p>
+                                <p class="descript">
+                                    <label for="solubility">Розчинність:</label><br>
+                                    <input type="text" id="solubility" class="description_" name="solubility" value="{{information[4]}}" required style="width: 100%;">
+                                </p>
+                                <p class="descript">
+                                    <label for="smell">Запах:</label><br>
+                                    <input type="text" id="smell" class="description_" name="smell" value="{{information[5]}}" required style="width: 100%;">
+                                </p>
+                                <p class="descript">
+                                    <label for="class">Клас:</label><br>
+                                    <input type="text" id="class" class="description_" name="class" value="{{information[6]}}" required style="width: 100%;">
+                                </p>
+                            </b>
+                        </section>
+                    <div id="some_buttons">
+                        <div id="send_new_description">
+                            <button type="submit" class="change">Зберегти зміни текстового опису</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            {% elif not_found %}
+            <div style="background-color: white;" id="descript" class="user-view">
+                <img id="image" {% if not formula %}src="static/images/pls_enter.png" data-formula='{{formula}}'{% else %}src="static/images/not_found.png"{% endif %}>
+                <p class="hint" style="display: flex; align-items: center;">
+                    Дана  речовина не знайдена. Можливо вона не додана 
+                    на сайт, перевірте чи Ви ввели її коректно.</p>
+            </div>
+            {% elif information %}
+            <div id="descript" class="user-view">
+                <div id="image_side">
+                    <img id="image" class="zoomable-img" {% if information[1] and information[1][num] %}
+                    src="{{information[1][num]}}"{% else %}src="static/images/no_photo.png"{% endif %}>
+                    <div class="row_photos">
+                        <button type="button" id="previous_photo" class="change" {% if information[1]|length in [0,1] or blocked_previous_button %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;" {% endif %}>Попереднє</button>
+                        <button type="button" id="next_photo" class="change" {% if information[1]|length in [0,1] or blocked_next_button %} disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"{% endif %}>Наступне</button>
+                    </div>
+                </div>
+                <div id="text_side">
+                    <div id="descript">
+                        <p id="the_formula">
+                            <span><strong>Формула:</strong></span>
+                            {% if information[7] %}{{information[7]}}{% else %} - {% endif %}
+                        </p>
+                        <p id="correct_name">
+                            <span><strong>Хімічна назва:</strong></span> 
+                            {% if information[2] %}{{information[2]}}{% else %} - {% endif %}
+                        </p>
+                        <p id="common_name">
+                            <span><strong>Загальна назва:</strong></span> 
+                            {% if information[3] %}{{information[3]}}{% else %} - {% endif %}
+                        </p>
+                        <p id="solubility">
+                            <span><strong>Розчинність:</strong></span> 
+                            {% if information[4] %}{{information[4]}}{% else %} - {% endif %}
+                        </p>
+                        <p id="smell">
+                            <span><strong>Запах:</strong></span> 
+                            {% if information[5] %}{{information[5]}}{% else %} - {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div id="descript"><b><i>
+                <p id="hint">Підказка!</p>
+                <p class="hint_tag">
+                    Правильне написання формули.
+                </p>
+                <p class="hint">{{information, not_found}}</p>
+                <p class="hint">
+                    Хімічні формули повинні бути правильно записані в поле для вводу,
+                    щоб сайт зміг їх впізнати. Допустимі маленький та великий регістри,
+                    базові числа та малі індекси (₁, ₂, ₃...). Також приймаються назви речовин.
+                </p>
+            </i></b></div>
+        {% endif %}
+        </div>
+    </div>
+
+    <script src="static/main.js"></script>
+
+    {% if blocked_sign_in %}
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const signInBtn = document.getElementById('sign_in');
+        if (signInBtn) {
+            signInBtn.disabled = true;
+            setTimeout(() => {
+                fetch('/unblock', { method: 'POST' })
+                    .then(response => {
+                        signInBtn.disabled = false;
+                    })
+            }, 10000);
+        }
+    });
+    </script>
+    {% endif %}
+
+    <dialog id="image-modal">
+        <button id="close_btn" class="close-btn" aria-label="Закрити">&times;</button>
+        <img id="modal-img" src="" alt="">
+    </dialog>
+
+    <script>
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const closeBtn = document.getElementById('close_btn');
+    document.querySelectorAll('.zoomable-img').forEach(img => {
+      img.addEventListener('click', () => {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        modal.showModal();
+      });
+    });
+    closeBtn.addEventListener('click', () => modal.close());
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.close();
+      }
+    });
+  </script>
+
+</body>
+<footer class="footer">© 2026 CheMelio. Всі права захищені.</footer>
+</html>

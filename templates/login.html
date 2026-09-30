@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ua">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="static/login.css">
+        <link rel="icon" href="static/images/logo.png" type="image/png">
+        <title>CheMelio</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+
+        <div id="menu">
+            <form class="phymly_icon" action="/">
+                <button id="main_menu" type="submit">
+                    <img class="phymly_icon" src="static/images/logo.png">
+                </button>
+            </form>
+            <div id="about_adm">
+                <form class='about_adm' action="/search">
+                    <button type="submit" class="abt_adm">Пошук</button>
+                </form>
+                <form class='about_adm' action="/tasks">
+                    <button type="submit" class="abt_adm">Завдання</button>
+                </form>
+                <form class='about_adm' action="/about">
+                    <button type="submit" class="abt_adm">Про сайт</button>
+                </form>
+            </div>
+            <p id="menu_text"><i>CheMelio - веб-сайт з хімії</i></p>
+            <div id="acc">
+                <form action="/signin">
+                    <button class="acc_button" id="sign_in">Реєстрація</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="main">
+            <div id="login">
+                <p id="log_in_text"><i><b>Введіть ваші дані для входу</b></i></p>
+                <form id="log_in" action="/enter_user_login" method="POST">
+                    <p class="ntr_text">Введіть логін користувача</p>
+                    <input id="username" name="username_login" type="text" placeholder="user1234" value="{{username_value_login}}">
+                        {% if error_username_login %}
+                            <p class="error_login">Помилка: введіть логін!</p>
+                        {% endif %}
+                        {% if error_username_login_short %}
+                            <p class="error_login">Помилка: має бути мінімум 6 символів!</p>
+                        {% endif %}
+
+                    <p class="ntr_text">Введіть пароль </p>
+                    <input id="password" name="password_login" type="password" placeholder="A8cd!32&98" value="{{password_value_login}}">
+                        {% if error_password_login %}
+                            <p class="error_login">Помилка: ведіть пароль!</p>
+                        {% endif %}
+                        {% if error_password_login_short %}
+                            <p class="error_login">Помилка: має бути мінімум 6 символів!</p>
+                        {% endif %}
+
+                    <div class="in_row">
+                        <input type="checkbox" id="check" onclick="Pass_login()">
+                        <label for="check">Показати пароль</label>
+                    </div>
+
+                    {% if success_login %}
+                        <p class="error_login">Такого користувача не знайдено!</p>
+                    {% endif %}
+                    <button type="submit" id="send">Увійти</button>
+                </form>
+                <form action="/">
+                    <button id="gohome">Повернутись на головну сторінку</button>
+                </form>
+            </div>
+        </div>
+
+    <script>
+        function Pass_login() {
+            var pass = document.getElementById("password");
+            if (pass.type === "password") {
+                pass.type = "text"
+            } else {
+                pass.type = "password"
+            }
+        }
+    </script>
+
+    </body>
+<footer class="footer">© 2026 CheMelio. Всі права захищені.</footer>
+</html>

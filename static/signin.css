@@ -1,0 +1,301 @@
+/* ============================================================
+   ChemLysis — signin.css (modern, orange accent)
+   ============================================================ */
+
+:root {
+  --orange-500: #f97316;
+  --orange-400: #fb923c;
+  --orange-600: #ea580c;
+  --ink: #1c1917;
+  --ink-soft: #44403c;
+  --muted: #78716c;
+  --line: #e7e5e4;
+  --surface: #ffffff;
+  --surface-2: #fafaf9;
+  --radius: 14px;
+  --shadow-md: 0 4px 16px rgba(28, 25, 23, 0.08);
+  --shadow-lg: 0 12px 32px rgba(28, 25, 23, 0.12);
+  --font: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #FDC830;
+  background: -webkit-linear-gradient(to top, #F37335, #FDC830);
+  background: linear-gradient(to top, #F37335, #FDC830);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+
+/* =====================  MENU  ===================== */
+
+#menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--ink);
+  color: #fff;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-md);
+  flex-wrap: wrap;
+}
+
+#menu .phymly_icon button,
+#main_menu {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.phymly_icon img {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+#about_adm {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.about_adm,
+form.about_adm { margin: 0; }
+
+.abt_adm {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.abt_adm:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+#menu_text {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  opacity: 0.95;
+  text-align: center;
+  flex: 1;
+  min-width: 200px;
+}
+
+#acc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#acc form { margin: 0; }
+
+.acc_button {
+  background: var(--orange-500);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
+}
+.acc_button:hover {
+  background: var(--orange-600);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.45);
+}
+.acc_button:active { transform: translateY(0); }
+.acc_button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+#acc_text { font-size: 14px; color: #fff; }
+
+#account {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+/* =====================  MAIN / SIGNIN  ===================== */
+
+#main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+#signin {
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sign_in_text {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--line);
+}
+
+#sign_in {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ntr_text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+#username,
+#password,
+#password_2,
+#email,
+#pin {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: var(--font);
+  background: var(--surface-2);
+  color: var(--ink);
+  transition: all 0.18s ease;
+}
+#username:focus,
+#password:focus,
+#password_2:focus,
+#email:focus,
+#pin:focus {
+  outline: none;
+  border-color: var(--orange-500);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.error_signin {
+  font-size: 13px;
+  color: #dc2626;
+  font-weight: 500;
+  margin-top: -6px;
+}
+
+#send,
+#send_pin {
+  background: linear-gradient(180deg, var(--orange-400), var(--orange-600));
+  color: #fff;
+  border: none;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+  margin-top: 6px;
+}
+#send:hover,
+#send_pin:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+#send:active,
+#send_pin:active { transform: translateY(0); }
+
+#gohome,
+#change_email,
+#resend_pin {
+  width: 100%;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  border: 1.5px solid var(--line);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+#gohome:hover,
+#change_email:hover,
+#resend_pin:hover {
+  border-color: var(--orange-300);
+  color: var(--orange-600);
+}
+
+#attemps {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.in_row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.send_in_row {
+  margin-left: 1dvh;
+  margin-right: 1dvh;
+}
+
+.footer {
+  background: #1c1917;
+  color: #fff;
+  text-align: center;
+  font-size: 13px;
+  padding: 14px 20px;
+  font-family: "Inter", "Segoe UI", system-ui, Arial, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+/* =====================  RESPONSIVE  ===================== */
+
+@media (max-width: 640px) {
+  #menu { padding: 12px 16px; }
+  #menu_text { font-size: 14px; }
+  #signin { padding: 24px 20px; }
+  .sign_in_text { font-size: 18px; }
+}

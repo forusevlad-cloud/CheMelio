@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ua">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="static/signin.css">
+        <link rel="icon" href="static/images/logo.png" type="image/png">
+        <title>CheMelio</title> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+
+        <div id="menu">
+            <form class="phymly_icon" action="/">
+                <button id="main_menu" type="submit">
+                    <img class="phymly_icon" src="static/images/logo.png">
+                </button>
+            </form>
+            <div id="about_adm">
+                <form class='about_adm' action="/search">
+                    <button type="submit" class="abt_adm">Пошук</button>
+                </form>
+                <form class='about_adm' action="/tasks">
+                    <button type="submit" class="abt_adm">Завдання</button>
+                </form>
+                <form class='about_adm' action="/about">
+                    <button type="submit" class="abt_adm">Про сайт</button>
+                </form>
+            </div>
+            <p id="menu_text"><i>CheMelio - веб-сайт з хімії</i></p>
+            <div id="acc">
+                <form action="/login">
+                    <button class="acc_button" id="log_in">Вхід</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="main">
+            <div id="signin">
+                {% if not begin_verification %}
+                <p class="sign_in_text"><i><b>Створіть акаунт</b></i></p>
+                <form id="sign_in" action="/send_user" method="POST">
+
+                    <p class="ntr_text">Введіть логін користувача</p>
+                    <input name='username' id="username" minlength="6" maxlength="26" type="text" placeholder="user1234" value="{{username_value}}">
+                    {% if error_username%}
+                        <p class="error_signin">Помилка: введіть логін!</p>
+                    {% endif %}
+                    {% if error_username_short%}
+                        <p class="error_signin">Помилка: має бути мінімум 6 символів!</p>
+                    {% endif %}
+
+
+                    <p class="ntr_text">Введіть пароль</p>
+                    <input name="password" id="password" minlength="6" type="password" placeholder="A8cd!32&98" value="{{password_value}}">
+                    {% if error_password %}
+                        <p class="error_signin">Помилка: введіть пароль!</p>
+                    {% endif %}
+                    {% if error_password_short%}
+                        <p class="error_signin">Помилка: має бути мінімум 6 символів!</p>
+                    {% endif %}
+
+
+                    <p class="ntr_text">Введіть пароль повторно</p>
+                    <input name="password_2" id="password_2" minlength="6" type="password" placeholder="A8cd!32&98" value="{{password_2_value}}">
+                    {% if error_password_2 %}
+                        <p class="error_signin">Помилка: Введіть пароль повторно!</p>
+                    {% endif %}
+                    {% if not error_password_2 and error_password_nsame %}
+                        <p class="error_signin">Помилка: Пароль не співпадає!</p>
+                    {% endif %}
+
+                    <div class="in_row">
+                        <input type="checkbox" id="check" onclick="Pass_signin()">
+                        <label for="check">Показати пароль</label>
+                    </div>
+
+                    <p class="ntr_text">Введіть email</p>
+                    <input name="email" id="email" type="email" placeholder="user@gmail.com" value="{{email_value}}">
+                    {% if error_email %}
+                        <p class="error_signin">Помилка: введіть email!</p>
+                    {% endif %}
+                    {% if email_not_exists %}
+                        <p class="error_signin">Помилка: email не існує!</p>
+                    {% endif %}
+
+
+                    <button type='submit' id="send">Надіслати</button>
+                </form>
+                {% if signed_in %}
+                <p class="error_signin">Такий користувач вже існує!</p>
+                {% endif %}
+                <form action="/">
+                    <button id="gohome">Повернутись на головну сторінку</button>
+                </form>
+                {% else %}
+                <p class="sign_in_text">Ми Вам надіслали код на вказаний email, введіть його будь-ласка, для підтвердження створення акаунту</p>
+                <form action="/work_with_pin" method="POST">
+                    <input type="text" name="pin" id="pin">
+                    <div class="in_row">
+                    <button class="send_in_row" type="submit" id="send_pin">Надіслати</button>
+                    <p class="send_in_row" id="attemps">Кількість спроб: {{amount_of_attemps}}</p>
+                    </div>
+                </form>
+                {% if wrong_pin %}
+                <p class="error_signin">Непрравильний код!</p>
+                {% endif %}
+                <form action="/change_email">
+                    <button id="change_email">Змінити email</button>
+                </form>
+                <form action="/send_pin">
+                    <button id="resend_pin">Надіслати код ще раз</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+
+        <script>
+            function Pass_signin() {
+                var pass = document.getElementById("password");
+                var pass2 = document.getElementById("password_2");
+                if (pass.type === "password") {
+                    pass.type = "text"
+                    pass2.type = "text"
+                } else {
+                    pass.type = "password"
+                    pass2.type = "password"
+                }
+            }
+        </script>
+    </body>
+<footer class="footer">© 2026 CheMelio. Всі права захищені.</footer>
+</html>
