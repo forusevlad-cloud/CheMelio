@@ -2,3 +2,4 @@ Flask
 flask-mailman
 email-validator
 Werkzeug
+gunicorn
